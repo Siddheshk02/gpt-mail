@@ -44,20 +44,34 @@ func Email() (string, error) {
 
 	prompt_prefix := os.Getenv("Prompt_prefix")
 	client := openai.NewClient(apiKey)
-	resp, err := client.CreateCompletion(
+
+	// resp, err := client.CreateCompletion(
+	// 	context.Background(),
+	// 	openai.CompletionRequest{
+	// 		Model:     openai.GPT3Dot5Turbo,
+	// 		MaxTokens: 5,
+	// 		Prompt:    prompt_prefix + prompt,
+	// 	},
+	// )
+
+	resp, err := client.CreateChatCompletion(
 		context.Background(),
-		openai.CompletionRequest{
-			Model:     openai.GPT3Dot5Turbo,
+		openai.ChatCompletionRequest{
 			MaxTokens: 5,
-			Prompt:    prompt_prefix + prompt,
-		},
-	)
+			Model:     openai.GPT3Dot5Turbo,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: prompt_prefix + prompt,
+				},
+			},
+		})
 
 	if err != nil {
 		fmt.Printf("Completion error: %v\n", err)
 	}
 
-	fmt.Println(resp.Choices[0].Text)
+	fmt.Println(resp.Choices[0].Message)
 
 	return "", nil
 }
