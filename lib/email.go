@@ -28,40 +28,30 @@ func Email() (string, error) {
 		log.Fatal(err)
 	}
 
-	fmt.Print("> Enter the Purpose for the Email : ")
+	fmt.Print("> Enter the Purpose/Information for the Email : ")
 	Purpose, err := reader.ReadString('\n')
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	prompt := fmt.Sprintf("Subject: %s Audience: %s Purpose: %s\n", Subject, Audience, Purpose)
+	prompt := fmt.Sprintf("Subject: %s Audience: %s Purpose/Information: %s\n", Subject, Audience, Purpose)
 
 	apiKey := os.Getenv("OPENAI_API_KEY")
-	fmt.Println(apiKey)
 	if apiKey == "" {
 		log.Fatalln("Invalid API Key!!")
 	}
 
 	prompt_prefix := os.Getenv("Prompt_prefix")
-	client := openai.NewClient(apiKey)
 
-	// resp, err := client.CreateCompletion(
-	// 	context.Background(),
-	// 	openai.CompletionRequest{
-	// 		Model:     openai.GPT3Dot5Turbo,
-	// 		MaxTokens: 5,
-	// 		Prompt:    prompt_prefix + prompt,
-	// 	},
-	// )
+	client := openai.NewClient(apiKey)
 
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			MaxTokens: 5,
-			Model:     openai.GPT3Dot5Turbo,
+			Model: openai.GPT3Dot5Turbo,
 			Messages: []openai.ChatCompletionMessage{
 				{
-					Role:    openai.ChatMessageRoleUser,
+					Role:    "user",
 					Content: prompt_prefix + prompt,
 				},
 			},
@@ -71,7 +61,9 @@ func Email() (string, error) {
 		fmt.Printf("Completion error: %v\n", err)
 	}
 
-	fmt.Println(resp.Choices[0].Message)
+	fmt.Println("> Response: ")
+	fmt.Println("")
+	fmt.Println(resp.Choices[0].Message.Content)
 
 	return "", nil
 }
