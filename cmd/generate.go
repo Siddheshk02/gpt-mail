@@ -22,6 +22,8 @@ var generateCmd = &cobra.Command{
 			log.Fatal(err)
 		}
 
+		fmt.Println("> Response: ")
+		fmt.Println("")
 		fmt.Println(res)
 	},
 }

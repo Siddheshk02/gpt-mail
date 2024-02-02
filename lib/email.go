@@ -61,9 +61,7 @@ func Email() (string, error) {
 		fmt.Printf("Completion error: %v\n", err)
 	}
 
-	fmt.Println("> Response: ")
-	fmt.Println("")
-	fmt.Println(resp.Choices[0].Message.Content)
+	res := resp.Choices[0].Message.Content
 
-	return "", nil
+	return res, nil
 }
